@@ -107,6 +107,7 @@ public class MainDisplay extends JFrame {
 		label0_1.setBounds(247, 160, 316, 23);
 		contentPane.add(label0_1);
 		
+		//Set the date picker format
 		UtilDateModel model2 = new UtilDateModel();
 		Properties prop2 = new Properties();
 		prop2.put("text.today", "Today");
@@ -125,24 +126,28 @@ public class MainDisplay extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {					
-					Date dueDay = (Date) datePicker2.getModel().getValue();
-					DateFormat dateFormat1 = new SimpleDateFormat("dd");
-					String dueDate = dateFormat1.format(dueDay);
+				try {
 					
-					number_of_pages = Integer.parseInt(textField.getText());
-					pages_read = Integer.parseInt(textField_1.getText());
 					
-					DateFormat tempDate1 = new SimpleDateFormat("yyyy-MM-dd");
-					tempIssue = tempDate1.format(dueDay);
+					Date dueDay = (Date) datePicker2.getModel().getValue(); // Retrieve the selected date and pick up only the due day
+					DateFormat dateFormat1 = new SimpleDateFormat("dd"); // This will be the format to be use 
+					String dueDate = dateFormat1.format(dueDay); // Store the value
 					
-					DateTimeFormatter tempDate2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-					tempCurrent = tempDate2.format(LocalDate.now());
+					number_of_pages = Integer.parseInt(textField.getText()); //Retrieve the number of pages
+					pages_read = Integer.parseInt(textField_1.getText()); //Retrieve the number of pages read
 					
-					LocalDate local1 = LocalDate.parse(tempCurrent);
+					DateFormat tempDate1 = new SimpleDateFormat("yyyy-MM-dd"); // Format to be use for issue date (for getting the remaining days)
+					tempIssue = tempDate1.format(dueDay); // Get the due day and use the format "tempDate1"
+					
+					DateTimeFormatter tempDate2 = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Format to be use for current date (for getting the remaining days)
+					tempCurrent = tempDate2.format(LocalDate.now()); // Get the current day and use the format "tempDate2"
+					
+					// Parse the retrieved issue and current date from string to date format
+					LocalDate local1 = LocalDate.parse(tempCurrent); 
 					LocalDate local2 = LocalDate.parse(tempIssue);
-										
-					remainingDays = Period.between(local1, local2).getDays();					
+								
+					//Formula
+					remainingDays = Period.between(local1, local2).getDays(); // Counting the remaining days between current date and issue day 				
 					percentage_read = (pages_read/number_of_pages)*100;
 					pages_left = number_of_pages - pages_read;
 					pages_per_day = pages_read/remainingDays;
@@ -154,9 +159,11 @@ public class MainDisplay extends JFrame {
 					System.out.println("Number of pages: "+number_of_pages);
 					System.out.println("Pages read: "+pages_read);
 				
-					JOptionPane.showMessageDialog(contentPane,"You have read "+Math.round(percentage_read)+"% of the book.\nYou have "+remainingDays+" day(s) remaining to return the book.\nYou still have "+Math.round(pages_left)+" page(s) left and you should read "+Math.round(pages_per_day)+" pages a day.\n");
+					//If all are correct, this message will show
+					JOptionPane.showMessageDialog(contentPane,"You have read "+Math.round(percentage_read)/*Decimal to whole number*/+"% of the book.\nYou have "+remainingDays+" day(s) remaining to return the book.\nYou still have "+Math.round(pages_left)+" page(s) left and you should read "+Math.round(pages_per_day)+" pages a day.\n");
 					
 				}catch(Exception e) {
+					// If something is missing or incorrect from the input, this message will show
 					JOptionPane.showMessageDialog(contentPane,"Something is wrong. Kindly check the values that you've entered.");
 				}
 				
